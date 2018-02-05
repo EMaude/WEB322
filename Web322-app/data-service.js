@@ -1,7 +1,7 @@
 const fs = require('fs');
 
-var employees;
-var departments;
+var employees = new Array;
+var departments= new Array;
 
 var initalize = new Promise (function(resolve, reject)
 {

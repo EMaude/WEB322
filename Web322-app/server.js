@@ -9,22 +9,22 @@ const port = process.env.PORT || 8080;
 
 app.use(express.static('public'));
 
-app.all('/', function(req, res)
+app.get('/', function(req, res)
 {
     res.sendFile(path.join(__dirname, "views/home.html"));
 });
 
-app.all('/home', function(req, res)
+app.get('/home', function(req, res)
 {
     res.sendFile(path.join(__dirname, "views/home.html"));
 });
 
-app.all('/about', function(req, res)
+app.get('/about', function(req, res)
 {
     res.sendFile(path.join(__dirname,"views/about.html"));
 });
 
-app.all('/employees', function(req, res)
+app.get('/employees', function(req, res)
 {
     data.getAllEmployees.then
     (
@@ -42,7 +42,7 @@ app.all('/employees', function(req, res)
     );
 });
 
-app.all('/departments', function(req, res)
+app.get('/departments', function(req, res)
 {
     data.getDepartments.then
     (
@@ -60,7 +60,7 @@ app.all('/departments', function(req, res)
     ); 
 });
 
-app.all('/managers', function(req, res)
+app.get('/managers', function(req, res)
 {
     data.getManagers.then
     (
