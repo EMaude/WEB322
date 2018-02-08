@@ -1,37 +1,38 @@
 const fs = require('fs');
 
 var employees = new Array;
-var departments= new Array;
+var  departments = new Array;
 
-var initalize = new Promise (function(resolve, reject)
-{
-    fs.readFile("./data/employees.json",  (err, data) =>
+function initalize(){return new Promise (function(resolve, reject)
     {
-        if(err)
+        fs.readFile("./data/employees.json",  (err, data) =>
         {
-            reject("Could not real employees.json");
-        }
-        else
-        {
-            var employees = JSON.parse(data);
-
-            fs.readFile("./data/departments.json", (err, data) =>
+            if(err)
             {
-                if(err)
-                {
-                    reject("Could not read departments.json");
-                }
-                else
-                {
-                    var departments = JSON.parse(data);
-                     resolve("Success");
-                }
-            });
-        }
-    });
-});
+                reject(new Error("Could not read employees.json"));
+            }
+            else
+            {
+                employees = JSON.parse(data);
 
-var getAllEmployees = new Promise(function(resolve, reject)
+                fs.readFile("./data/departments.json", (err, data) =>
+                {
+                    if(err)
+                    {
+                        reject(new Error("Could not read departments.json"));
+                    }
+                    else
+                    {
+                        departments = JSON.parse(data);
+                        resolve("Success");
+                    }
+                });
+            }
+        });
+    });
+};
+
+function getAllEmployees()  {return new Promise(function(resolve, reject)
 {
     if(employees.length > 0)
     {
@@ -41,11 +42,11 @@ var getAllEmployees = new Promise(function(resolve, reject)
     {
         reject("Employee data not found");
     }
-});
+});};
 
-var getManagers = new Promise(function(resolve, reject)
+function getManagers() { return new Promise(function(resolve, reject)
 {
-    var managers = [];
+    var managers = new Array;
 
     for(let i = 0; i < employees.length; i++)
     {
@@ -63,9 +64,9 @@ var getManagers = new Promise(function(resolve, reject)
     {
         reject("Managers not found");
     }
-});
+});};
 
-var getDepartments = new Promise(function (resolve, reject)
+function getDepartments() {return new Promise(function(resolve, reject)
 {
     if(departments.length > 0)
     {
@@ -75,7 +76,7 @@ var getDepartments = new Promise(function (resolve, reject)
     {
         reject("Department data not found");
     }
-});
+});};
 
 exports.initalize = initalize;
 exports.getAllEmployees = getAllEmployees;
