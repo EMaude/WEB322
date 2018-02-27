@@ -30,30 +30,27 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
                     <li class="active">
-                        <a href="#">Home</a>
+                        {{#navLink "/home"}}Home{{/navLink}}
                     </li>
                     <li>
-                        <a href="/about">About</a>
+                        {{#navLink "/about"}}About{{/navLink}}
                     </li>
                     <li>
-                        <a href="/employees/add">Add Employee</a>
+                        {{#navLink "/employees/add"}}Add Employee{{/navLink}}
                     </li>
                     <li>
-                        <a href="/images/add">Add Image</a>
+                        {{#navLink "/images/add"}}Add Image{{/navLink}}
                     </li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li>
-                        <a href="/images">Images</a>
+                        {{#navLink "/images"}}Images{{/navLink}}
                     </li>
                     <li>
-                        <a href="/employees">Employees</a>
+                        {{#navLink "/employees"}}Employees{{/navLink}}
                     </li>
                     <li>
-                        <a href="/managers">Managers</a>
-                    </li>
-                    <li>
-                        <a href="/departments">Departments</a>
+                        {{#navLink "/departments"}}Departments{{/navLink}}
                     </li>
                 </ul>
             </div>
@@ -62,35 +59,9 @@
         <!-- /.container-fluid -->
     </nav>
     <div class="container">
-        <div class="row">
-            <div class="col-md-12">
+        {{{body}}}
 
-                <h2>Add Image</h2>
-
-                <br />
-
-                <form method="post" action="/images/add" enctype="multipart/form-data">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label for="firstName">Image File:</label>
-                                <input class="form-control" id="imageFile" name="imageFile" type="file" />
-                            </div>
-                        </div>
-                    </div>
-
-                    <hr />
-
-                    <input type="submit" class="btn btn-primary pull-right" value="Add Image" />
-                    <br />
-                    <br />
-                    <br />
-
-                </form>
-            </div>
-        </div>
     </div>
-
     <!-- Latest compiled and minified jQuery 3.2.1 JavaScript -->
     <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
         crossorigin="anonymous"></script>

@@ -18,6 +18,7 @@ const path = require('path');
 const multer = require('multer');
 const fs = require('fs');
 const bodyParser = require('body-parser');
+const exphbs = require("express-handlebars");
 
 //custom
 const data = require('./data-service.js');
@@ -25,6 +26,36 @@ const data = require('./data-service.js');
 //global variables
 const app = express();
 const port = process.env.PORT || 8080;
+
+//template engine
+app.engine('.hbs', exphbs({ 
+    extname: '.hbs', 
+    defaultLayout: 'main',
+    helpers: {
+        navLink: function(url, options){
+            return '<li' +
+            ((url == app.locals.activeRoute) ? ' class="active" ' : '') + 
+            '><a href="' + url + '">' + options.fn(this) + '</a></li>';
+           },
+           equal: function (lvalue, rvalue, options) {
+            if (arguments.length < 3)
+            throw new Error("Handlebars Helper equal needs 2 parameters");
+            if (lvalue != rvalue) {
+            return options.inverse(this);
+            } else {
+            return options.fn(this);
+            }
+           }  
+    }
+}));
+app.set('view engine', '.hbs');
+
+app.use(function(req,res,next){
+    let route = req.baseUrl + req.path;
+    app.locals.activeRoute = (route == "/") ? "/" : route.replace(/\/$/, "");
+    next();
+   });
+   
 
 //midware
 app.use(express.static('public'));
@@ -40,15 +71,15 @@ const upload = multer({ storage: storage });
 
 //routes
 app.get('/', function (req, res) {
-    res.sendFile(path.join(__dirname, "views/home.html"));
+    res.redirect('/home');
 });
 
 app.get('/home', function (req, res) {
-    res.sendFile(path.join(__dirname, "views/home.html"));
+    res.render('home', {});
 });
 
 app.get('/about', function (req, res) {
-    res.sendFile(path.join(__dirname, "views/about.html"));
+    res.render('about', {});
 });
 
 app.get('/employees', function (req, res) {
@@ -95,7 +126,7 @@ app.get('/departments', function (req, res) {
     });
 });
 
-app.get('/managers', function (req, res) {
+/*app.get('/managers', function (req, res) {
     res.setHeader('Content-Type', 'application/json');
     data.getManagers().then((data) => {
         res.json(data);
@@ -104,14 +135,14 @@ app.get('/managers', function (req, res) {
         res.json({ error: err });
         console.log(err);
     });
-});
+});*/
 
 app.get('/employees/add', function (req, res) {
-    res.sendFile(path.join(__dirname, "views/addEmployee.html"));
+    res.render('addEmployee', {});
 });
 
 app.get('/images/add', function (req, res) {
-    res.sendFile(path.join(__dirname, "views/addImage.html"));
+    res.render('addImage', {});
 });
 
 app.post('/images/add', upload.single("imageFile"), function (req, res) {
@@ -119,9 +150,8 @@ app.post('/images/add', upload.single("imageFile"), function (req, res) {
 });
 
 app.get('/images', function (req, res) {
-    res.setHeader('Content-Type', 'application/json');
     fs.readdir("./public/images/uploaded", function (err, items) {
-        res.json(items);
+        res.render('images', {data: items});
     });
 });
 
