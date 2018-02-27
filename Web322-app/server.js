@@ -83,45 +83,42 @@ app.get('/about', function (req, res) {
 });
 
 app.get('/employees', function (req, res) {
-    res.setHeader('Content-Type', 'application/json');
-
     if (req.query.status) {
         data.getEmployeesByStatus(req.query.status).then(function (data) {
-            res.json(data);
+            res.render("employees",{employees: data});
         }).catch(function (err) {
-            res.json({ err: err });
+            res.render({message: "no results"});
         });
     }
     else if (req.query.department) {
         data.getEmployeesByDepartment(req.query.department).then(function (data) {
-            res.json(data);
+            res.render("employees",{employees: data});
         }).catch(function (err) {
-            res.json({ err: err });
+            res.render({message: "no results"});
         });
     }
     else if (req.query.manager) {
         data.getEmployeesByManager(req.query.manager).then(function(data) {
-            res.json(data);
+            res.render("employees",{employees: data});
         }).catch(function (err) {
-            res.json({ err: err });
+            res.render({message: "no results"});
         });
     }
     else {
         data.getAllEmployees().then(function (data) {
-            res.json(data);
+            res.render("employees",{employees: data});
         }).catch(function (err) {
-            res.json({ err: err });
+            res.render({message: "no results"});
         });
     }
 });
 
 app.get('/departments', function (req, res) {
-    res.setHeader('Content-Type', 'application/json');
     data.getDepartments().then((data) => {
-        res.json(data);
+        res.render("departments", {department:data});
     }
     ).catch((err) => {
-        res.json({ error: err });
+        res.render({ mesage: "no results" });
         console.log(err);
     });
 });
@@ -161,13 +158,20 @@ app.post('/employees/add', function (req, res) {
     }).catch((err) => { throw err; });
 });
 
-app.get('/employees/:num', function (req, res) {
-    res.setHeader('Content-Type', 'application/json');
-
+app.get('/employee/:num', function (req, res) {
     data.getEmployeesByNum(req.params.num).then(function (data) {
-        res.json(data);
+        res.render("employee",{ employee: data });
     }).catch(function (err) {
-        res.json({ err: err });
+        res.render("employee",{message:"no results"});
+    });
+});
+
+app.post("/employee/update", (req, res) => {
+    data.updateEmployee(req.body).then(() => {
+        res.redirect("/employees");
+    }).catch( err => {
+        console.log("Something bad happend POST /employee/update");
+        res.redirect("/employees");
     });
 });
 

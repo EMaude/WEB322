@@ -162,6 +162,22 @@ function getEmployeesByNum(query){
     });
 }
 
+function updateEmployee(data)
+{
+    return new Promise(resolve, reject)
+    {
+        for(let i = 0; i , employees.length; i++)
+        {
+            if(employees[i].employeeNum == data.employeeNum)
+            {
+                employees[i] == data;
+                resolve();
+            }
+        }
+        revoke();
+    };
+}
+
 exports.initalize = initalize;
 exports.getAllEmployees = getAllEmployees;
 exports.getManagers = getManagers;
@@ -171,3 +187,4 @@ exports.getEmployeesByStatus = getEmployeesByStatus;
 exports.getEmployeesByDepartment = getEmployeesByDepartment;
 exports.getEmployeesByManager = getEmployeesByManager;
 exports.getEmployeesByNum = getEmployeesByNum;
+exports.updateEmployee = updateEmployee;
