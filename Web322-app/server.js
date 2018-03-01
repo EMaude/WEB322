@@ -160,9 +160,9 @@ app.post('/employees/add', function (req, res) {
 
 app.get('/employee/:num', function (req, res) {
     data.getEmployeesByNum(req.params.num).then(function (data) {
-        res.render("employee",{ employee: data });
+        res.render('employee',{employee: data});
     }).catch(function (err) {
-        res.render("employee",{message:"no results"});
+        res.render('employee', {message:"no results"});
     });
 });
 

@@ -143,39 +143,34 @@ function getEmployeesByManager(query){
 }
 function getEmployeesByNum(query){
     return new Promise(function (resolve, reject){
-        let result = new Array;
+        let result;
         for(let i = 0; i < employees.length; i++)
         {
             if(employees[i].employeeNum == query)
             {
-                result.push(employees[i]);
+                result = employees[i];
+                resolve(result);
             }
         }
-
-        if(result.length == 0)
-        {
-            reject("no results returned");
-        }
-        else{
-            resolve(result);
-        }
+        
+        reject("no results returned");
     });
 }
 
 function updateEmployee(data)
 {
-    return new Promise(resolve, reject)
+    return new Promise(function(resolve, reject)
     {
-        for(let i = 0; i , employees.length; i++)
+        for(let i = 0; i < employees.length; i++)
         {
             if(employees[i].employeeNum == data.employeeNum)
             {
-                employees[i] == data;
+                employees[i] = data;
                 resolve();
             }
         }
         revoke();
-    };
+    });
 }
 
 exports.initalize = initalize;

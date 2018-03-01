@@ -1,9 +1,9 @@
 <div class="row">
     <div class="col-md-12">
-        <h2>{{employee.firstName}} {{ employee.lastName}} - Employee: {{ employee.employeeNum}}</h2>
+        <h2>{{employee.firstName}} {{employee.lastName}} - Employee: {{employee.employeeNum}}</h2>
         <hr />
         <form method="post" action="/employee/update">
-          <input type="hidden" name="employeeNum" value="{{ employee.employeeNum}}" />
+            <input type="hidden" name="employeeNum" value="1" />
             <fieldset>
                 <legend>Personal Information</legend>
                 <div class="row">
@@ -20,8 +20,7 @@
                         </div>
                     </div>
                 </div>
-            </fieldset>
-             <div class="row">
+                <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="email">Email:</label>
@@ -59,8 +58,6 @@
                         </div>
                     </div>
                 </div>
-
-
             </fieldset>
 
             <fieldset>
@@ -69,38 +66,41 @@
                     <div class="col-md-3">
                         <div class="form-group">
                             <label for="isManager">Manager:</label>
-                            <input class="form-control" type="checkbox" id="isManager" name="isManager"  {{#if employee.isManager}} checked {{/if}}  />
+                            <input class="form-control" type="checkbox" id="isManager" name="isManager" {{#if employee.isManager}} checked {{/if}} />
                         </div>
                     </div>
 
                     <div class="col-md-3">
                         <div class="form-group">
                             <label for="employeeManagerNum">Employee's Manager Number:</label>
-                            <input class="form-control" id="employeeManagerNum" name="employeeManagerNum" type="text" value="{{employee.employeeManagerNum}}"/>
+                            <input class="form-control" id="employeeManagerNum" name="employeeManagerNum" type="text" value="{{employee.employeeManagerNum}}"
+                            />
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
-                            <label>Status:</label><br />
-                            <label  class="checkbox-inline">
-                                <input type="radio" id="statusFT" name="status"  value="Full Time" {{#equal employee.status "Full Time" }} checked {{/equal}} /> Full Time
+                            <label>Status:</label>
+                            <br />
+                            <label class="checkbox-inline">
+                                <input type="radio" id="statusFT" name="status" value="Full Time" {{#equal employee.status "Full Time" }} checked {{/equal}}
+                                /> Full Time
                             </label>
                             <label class="checkbox-inline">
-                                <input type="radio" id="statusPT" name="status"  value="Part Time" {{#equal employee.status "Part Time" }} checked {{/equal}}/> Part Time
+                                <input type="radio" id="statusPT" name="status" value="Part Time" {{#equal employee.status "Part Time" }} checked {{/equal}}/> Part Time
                             </label>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
                             <label for="department">Department</label>
-                                <select class="form-control" name="department" id="department">
-                                    <option value="1" {{#equal employee.department "1" }} selected {{/equal}}>1</option>
-                                    <option value="2" {{#equal employee.department "2" }} selected {{/equal}}>2</option>
-                                    <option value="3" {{#equal employee.department "3" }} selected {{/equal}}>3</option>
-                                    <option value="4" {{#equal employee.department "4" }} selected {{/equal}}>4</option>
-                                    <option value="5" {{#equal employee.department "5" }} selected {{/equal}}>5</option>
-                                    <option value="6" {{#equal employee.department "6" }} selected {{/equal}}>6</option>
-                                    <option value="7" {{#equal employee.department "7" }} selected {{/equal}}>7</option>
+                            <select class="form-control" name="department" id="department">
+                                <option value="1" {{#equal employee.department "1" }} selected {{/equal}}>1</option>
+                                <option value="2" {{#equal employee.department "2" }} selected {{/equal}}>2</option>
+                                <option value="3" {{#equal employee.department "3" }} selected {{/equal}}>3</option>
+                                <option value="4" {{#equal employee.department "4" }} selected {{/equal}}>4</option>
+                                <option value="5" {{#equal employee.department "5" }} selected {{/equal}}>5</option>
+                                <option value="6" {{#equal employee.department "6" }} selected {{/equal}}>6</option>
+                                <option value="7" {{#equal employee.department "7" }} selected {{/equal}}>7</option>
                             </select>
                         </div>
                     </div>
@@ -121,5 +121,8 @@
             <br />
             <br />
         </form>
+        {{#unless employee}}
+        <strong>{{message}}</strong>
+        {{/unless}}
     </div>
 </div>
