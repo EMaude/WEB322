@@ -84,29 +84,57 @@ app.get('/about', function (req, res) {
 
 app.get('/employees', function (req, res) {
     if (req.query.status) {
-        data.getEmployeesByStatus(req.query.status).then(function (data) {
-            res.render("employees",{employees: data});
+        data.getEmployeesByStatus(req.query.status).then(function(data) {
+            if(data.length > 0)
+            {
+                res.render("employees",{employees: data});
+            }
+            else
+            {
+                res.render("employees", {message: "no results"});
+            }
         }).catch(function (err) {
             res.render({message: "no results"});
         });
     }
     else if (req.query.department) {
         data.getEmployeesByDepartment(req.query.department).then(function (data) {
-            res.render("employees",{employees: data});
+            if(data.length > 0)
+            {
+                res.render("employees",{employees: data});
+            }
+            else
+            {
+                res.render("employees", {message: "no results"});
+            }
         }).catch(function (err) {
             res.render({message: "no results"});
         });
     }
     else if (req.query.manager) {
         data.getEmployeesByManager(req.query.manager).then(function(data) {
-            res.render("employees",{employees: data});
+            if(data.length > 0)
+            {
+                res.render("employees",{employees: data});
+            }
+            else
+            {
+                res.render("employees", {message: "no results"});
+            }
         }).catch(function (err) {
-            res.render({message: "no results"});
+            res.render("employees", {message: "no results"});
         });
     }
     else {
         data.getAllEmployees().then(function (data) {
-            res.render("employees",{employees: data});
+            if(data.length > 0)
+            {
+                res.render("employees",{employees: data});
+            }
+            else
+            {
+                res.render("employees", {message: "no results"});
+            }
         }).catch(function (err) {
             res.render({message: "no results"});
         });
@@ -115,10 +143,17 @@ app.get('/employees', function (req, res) {
 
 app.get('/departments', function (req, res) {
     data.getDepartments().then((data) => {
-        res.render("departments", {department:data});
+        if(data.length > 0)
+        {
+            res.render("departments", {department:data});
+        }
+        else
+        {
+            res.render("departments", {message: "no results"});
+        }
     }
     ).catch((err) => {
-        res.render({ mesage: "no results" });
+        res.render({ message: "no results" });
         console.log(err);
     });
 });
@@ -160,7 +195,14 @@ app.post('/employees/add', function (req, res) {
 
 app.get('/employee/:num', function (req, res) {
     data.getEmployeesByNum(req.params.num).then(function (data) {
-        res.render('employee',{employee: data});
+        if(data.length > 0)
+        {
+            res.render("employees",{employees: data});
+        }
+        else
+        {
+            res.render("employees", {message: "no results"});
+        }
     }).catch(function (err) {
         res.render('employee', {message:"no results"});
     });
@@ -175,6 +217,37 @@ app.post("/employee/update", (req, res) => {
     });
 });
 
+app.get("/departments/add", (req, res) =>{
+    res.render('addDepartment', {});
+});
+
+app.post("/departments/add", (req, res) => {
+    data.addDepartment(req.body).then(() => {
+        res.redirect('/departments');
+    }).catch((err) => { throw err; });
+});
+
+app.post("/departments/update", (req, res) => {
+    data.updateDepartment(req.body).then(() => {
+        res.redirect("/departments");
+    }).catch( err => {
+        console.log("Something bad happend POST /department/update");
+        res.redirect("/departments");
+    });
+});
+
+app.get("/department/:departmentId", function (req, res) {
+    data.getDepartmentsById(req.params.departmentId).then(function(data){
+        if(data.length > 0)
+        {
+            res.render("department", {department: data});
+        }else{
+            res.status(404).send("Department Not Found");
+        }
+    }).catch(function(){
+        res.status(404).send("Department Not Found");
+    });
+});
 //init 
 data.initalize().then(
     (result) => {
