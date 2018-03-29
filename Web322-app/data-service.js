@@ -10,7 +10,7 @@ const sequelize = new Sequelize('d3dcfh83m2srpd', 'kxzfymfrddgdra', '47d3c28d67f
 });
 
 const Employee = sequelize.define('Employee',{
-    employeeNum:    Sequelize.INTEGER,
+    employeeNum:    {type: Sequelize.INTEGER, primaryKey:true, autoIncrement:true},
     firstName:      Sequelize.STRING,
     lastName:       Sequelize.STRING,
     email:          Sequelize.STRING,
@@ -27,7 +27,7 @@ const Employee = sequelize.define('Employee',{
  });
 
  const Department = sequelize.define('Department',{
-     departmentId:      Sequelize.INTEGER,
+     departmentId:      {type: Sequelize.INTEGER, primaryKey:true, autoIncrement:true},
      departmentName:    Sequelize.STRING,
  });
 
@@ -62,18 +62,21 @@ function getDepartments() {
 }
 
 function addEmployee(data) {
-    return new Promise(function (resolve, reject) {
-        data.isManager = (data.isManager) ? true : false;
-        for(const item in data)
+
+    data.isManager = (data.isManager) ? true : false;
+    console.log(data.isManager);
+
+    for(var item in data)
+    {
+        if(data[item] == "")
         {
-            if(item == "")
-            {
-                item = null;
-            }
+            data[item] = null;
         }
+    }
+
+    return new Promise(function (resolve, reject) {
 
         Employee.create({
-            employeeNum:    data.employeeNum,
             firstName:      data.firstName,
             lastName:       data.lastName,
             email:          data.email,
@@ -113,7 +116,7 @@ function getEmployeesByDepartment(query){
             where: {department: query}
         }).then(function(data){
                 resolve(data);
-            }).catch(function(){
+            }).catch(function(err){
                 reject("no results returned");
             });
        });   
@@ -145,15 +148,14 @@ function updateEmployee(data)
 {
     return new Promise(function (resolve, reject) {
         data.isManager = (data.isManager) ? true : false;
-        for(const item in data)
+        for(var item in data)
         {
-            if(item == "")
+            if(data[item] == "")
             {
-                item = null;
+                data[item] = null;
             }
         }
         Employee.update({
-            employeeNum:    data.employeeNum,
             firstName:      data.firstName,
             lastName:       data.lastName,
             email:          data.email,
@@ -180,16 +182,15 @@ function updateEmployee(data)
 function addDepartment(data)
 {
     return new Promise(function (resolve, reject) {
-        for(const item in data)
+        for(var item in data)
         {
-            if(item == "")
+            if(data[item] == "")
             {
-                item = null;
+                data[item] = null;
             }
         }
         Department.create(
             {
-                departmentId:     data.departmentId,
                 departmentName:   data.departmentName,
             }
         ).then(function(){
@@ -203,16 +204,16 @@ function addDepartment(data)
 function updateDepartment(data)
 {
     return new Promise(function (resolve, reject) {
-        for(const item in data)
+
+        for(var item in data)
         {
-            if(item == "")
+            if(data[item] == "")
             {
-                item = null;
+                data[item] = null;
             }
         }
         Department.update(
             {
-                departmentId:     data.departmentId,
                 departmentName:   data.departmentName,
             },{
                 where: {departmentId: data.departmentId}
@@ -224,16 +225,28 @@ function updateDepartment(data)
         });
     });
 }
-function getDepartmentsById(query)
+function getDepartmentsById(id)
 {
     return new Promise(function(resolve, reject){
         department.findAll({
-            where: {departmentId: query.departmentId}
+            where: {departmentId: id}
         }).then(function(data){
             resolve(data);
         }).catch(function(){
             reject("No result found");
         })
+    });
+}
+
+function deleteEmployeeByNum(empNum){
+    return new Promise(function(resolve, reject){
+        Employee.destroy({
+            where: {employeeNum: empNum}
+        }).then(function(){
+            resolve();
+        }).catch(function(){
+            reject("Could not delete");
+        });
     });
 }
 
@@ -249,3 +262,4 @@ exports.updateEmployee = updateEmployee;
 exports.addDepartment = addDepartment;
 exports.updateDepartment = updateDepartment;
 exports.getDepartmentsById = getDepartmentsById;
+exports.deleteEmployeeByNum = deleteEmployeeByNum;

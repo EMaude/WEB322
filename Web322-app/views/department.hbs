@@ -4,14 +4,14 @@
         <hr />
         
         <form method="post" action="/departments/update">
-
+            <input type="hidden" name="DepartmentId" value="{{department.DepartmentId}}" />       
             <fieldset>
                 <legend>Department Information</legend>
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="departmentName">Department Name:</label>
-                            <input type="text", name ="departmentName", label ="Department Name" />
+                            <input type="text", name ="departmentName", label ="Department Name" value="{{data.departmentName}}" />
                         </div>
                     </div>
                 </div>

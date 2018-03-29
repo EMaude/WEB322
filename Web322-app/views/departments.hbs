@@ -18,13 +18,13 @@
                             <a href="/employees?department={{departmentId}}">{{departmentId}}</a>
                         </td>
                         <td>
-                            <a href="/employees?department={{departmentId}}">{{departmentName}}</a>
+                            <a href="/department/{{departmentId}}">{{departmentName}}</a>
                         </td>
                     </tr>
                     {{/each}}
                 </tbody>
             </table>
-        {{#unless employee}}
+        {{#unless department}}
         <strong>{{message}}</strong>
         {{/unless}}
         </div>
