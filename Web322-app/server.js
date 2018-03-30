@@ -7,8 +7,7 @@
 *
 * Name: Elliot Maude Student ID: 032830127 Date: 2/21/18
 *
-* Online (Heroku) Link: https://young-caverns-24262.herokuapp.com
-*
+* Online (Heroku) Link: https://young-caverns-24262.herokuapp.com/
 ********************************************************************************/
 
 //node & npm
@@ -85,9 +84,9 @@ app.get('/about', function (req, res) {
 
 app.get('/employees', function (req, res) {
     if (req.query.status) {
-        data.getEmployeesByStatus(req.query.status).then(function (data) {
-            if (data) {
-                res.render("employees", { employees: data });
+        data.getEmployeesByStatus(req.query.status).then(function (ret) {
+            if (ret) {
+                res.render("employees", { employees: ret });
             }
             else {
                 res.render("employees", { message: "no results" });
@@ -97,21 +96,21 @@ app.get('/employees', function (req, res) {
         });
     }
     else if (req.query.department) {
-        data.getEmployeesByDepartment(req.query.department).then(function (data) {
-            if (data) {
-                res.render("employees", { employees: data });
+        data.getEmployeesByDepartment(req.query.department).then(function (ret) {
+            if (ret) {
+                res.render("employees", { employees: ret });
             }
             else {
-                res.render("employees", { message: "no results" });
+                res.render("employees", { message: "no results returned" });
             }
         }).catch(function (err) {
-            res.render("employees", { message: "no results" });
+            res.render("employees", { message: "no results found" });
         });
     }
     else if (req.query.manager) {
-        data.getEmployeesByManager(req.query.manager).then(function (data) {
-            if (data) {
-                res.render("employees", { employees: data });
+        data.getEmployeesByManager(req.query.manager).then(function (ret) {
+            if (ret) {
+                res.render("employees", { employees: ret });
             }
             else {
                 res.render("employees", { message: "no results" });
@@ -121,9 +120,9 @@ app.get('/employees', function (req, res) {
         });
     }
     else {
-        data.getAllEmployees().then(function (data) {
-            if (data) {
-                res.render("employees", { employees: data });
+        data.getAllEmployees().then(function (ret) {
+            if (ret) {
+                res.render("employees", { employees: ret });
             }
             else {
                 res.render("employees", { message: "no results" });
@@ -135,9 +134,9 @@ app.get('/employees', function (req, res) {
 });
 
 app.get('/departments', function (req, res) {
-    data.getDepartments().then((data) => {
-        if (data) {
-            res.render("departments", { department: data });
+    data.getDepartments().then((ret) => {
+        if (ret) {
+            res.render("departments", { department: ret });
         }
         else {
             res.render("departments", { message: "no results" });
@@ -161,8 +160,8 @@ app.get('/departments', function (req, res) {
 });*/
 
 app.get('/employees/add', function (req, res) {
-    data.getDepartments().then(function(data){
-        res.render('addEmployee', {departments: data});
+    data.getDepartments().then(function(ret){
+        res.render('addEmployee', {departments: ret});
     }).catch(function(){
         res.render('addEmployee', {departments: []});
     });
@@ -193,17 +192,17 @@ app.post('/employees/add', function (req, res) {
 app.get("/employee/:empNum", (req, res) => {
     // initialize an empty object to store the values
     let viewData = {};
-    data.getEmployeesByNum(req.params.empNum).then((data) => {
-        if (data) {
-            viewData.employee = data; //store employee data in the "viewData" object as "employee"
+    data.getEmployeesByNum(req.params.empNum).then((ret) => {
+        if (ret) {
+            viewData.employee = ret; //store employee data in the "viewData" object as "employee"
         } else {
             viewData.employee = null; // set employee to null if none were returned
         }
     }).catch(() => {
         viewData.employee = null; // set employee to null if there was an error
     }).then(data.getDepartments)
-        .then((data) => {
-            viewData.departments = data; // store department data in the "viewData" object as "departments"
+        .then((ret) => {
+            viewData.departments = ret; // store department data in the "viewData" object as "departments"
             // loop through viewData.departments and once we have found the departmentId that matches
             // the employee's "department" value, add a "selected" property to the matching
             // viewData.departments object
@@ -252,13 +251,13 @@ app.post("/departments/update", (req, res) => {
 });
 
 app.get("/department/:departmentId", function (req, res) {
-    data.getDepartmentsById(req.params.departmentId).then(function (data) {
-        if (data) {
-            res.render("department", { department: data });
+    data.getDepartmentsById(req.params.departmentId).then(function (ret) {
+        if (ret) {
+            res.render("department", { department: ret });
         } else {
-            res.status(404).send("Department Not Found");
+            res.status(404).send("Department Data Not Found");
         }
-    }).catch(function () {
+    }).catch(function (msg) {
         res.status(404).send("Department Not Found");
     });
 });

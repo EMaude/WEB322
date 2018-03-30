@@ -22,7 +22,7 @@ const Employee = sequelize.define('Employee',{
     isManager:      Sequelize.BOOLEAN,
     employeeManagerNum: Sequelize.INTEGER,
     status:         Sequelize.STRING,
-    depatment:      Sequelize.INTEGER,
+    department:      Sequelize.INTEGER,
     hireDate:       Sequelize.STRING
  });
 
@@ -88,7 +88,7 @@ function addEmployee(data) {
             isManager:      data.isManager,
             employeeManagerNum: data.employeeManagerNum,
             status:         data.status,
-            depatment:      data.department,
+            department:      data.department,
             hireDate:       data.hireDate
         }).then(function(){
             resolve();
@@ -137,7 +137,7 @@ function getEmployeesByNum(query){
         Employee.findAll({
             where: {employeeNum: query}
         }).then(function(data){
-                resolve(data);
+                resolve(data[0]);
             }).catch(function(){
                 reject("no results returned");
             });
@@ -167,7 +167,7 @@ function updateEmployee(data)
             isManager:      data.isManager,
             employeeManagerNum: data.employeeManagerNum,
             status:         data.status,
-            depatment:      data.department,
+            department:      data.department,
             hireDate:       data.hireDate
         },{
             where: {EmployeeNum: data.employeeNum}
@@ -225,13 +225,14 @@ function updateDepartment(data)
         });
     });
 }
-function getDepartmentsById(id)
+
+function getDepartmentsById(query)
 {
     return new Promise(function(resolve, reject){
-        department.findAll({
-            where: {departmentId: id}
+        Department.findAll({
+            where: {departmentId: query}
         }).then(function(data){
-            resolve(data);
+            resolve(data[0]);
         }).catch(function(){
             reject("No result found");
         })
