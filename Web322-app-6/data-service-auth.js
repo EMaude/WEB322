@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const schema = mongoose.Schema;
 
-const connectString = "mongodb://a6u:123abcd@ds031591.mlab.com:31591/web322_a6"
+const connectString = "mongodb://a6u:1234abcd@ds031591.mlab.com:31591/web322_a6"
 
 const userSchema = new schema({
 
@@ -9,13 +9,14 @@ const userSchema = new schema({
     "password": String,
     "email": String,
     "loginHistory": [{
-        "dateTime": Date,
+        "dateTime": String,
         "userAgent": String
     }]
 });
 
-let user;
-module.exports.initialize = function(){
+let User;
+module.exports.initialize = function()
+{
     return new Promise(function(resolve, reject)
     {
         let db = mongoose.createConnection(connectString);
@@ -25,7 +26,7 @@ module.exports.initialize = function(){
         });
         
         db.once('open', ()=>{
-            user = db.model("users", userSchema);
+            User = db.model("users", userSchema);
             resolve();
         });
     });
@@ -34,16 +35,17 @@ module.exports.initialize = function(){
 module.exports.registerUser = function(userData)
 {
     return new Promise(function(resolve, reject){
-        if(userData.password1 === userData.password2)
+        if(userData.password === userData.password2)
         {
-            let newUser = new user(userData);
+            let newUser = new User(userData);
             newUser.save((err)=>{
-                if(err.code === 11000){
-                    reject("Username already taken");
-                }
-                else if(err)
+                if(err)
                 {
-                    reject("Error creating user: " + err);
+                    if(err.code === 11000){
+                        reject("Username already taken");
+                    }else{
+                        reject("Error creating user: " + err);
+                    }
                 }
                 else
                 {
@@ -61,23 +63,24 @@ module.exports.registerUser = function(userData)
 module.exports.checkUser = function(userData)
 {
     return new Promise(function(resolve, reject){
-        user.find({userName: userData.userName })
+        User.find({userName: userData.userName })
         .exec()
         .then((data)=>{
-            if(data.length === 0)
+            if(data.length == 0)
             {
-                reject("Unable to find user: " + userData.user);
+                reject("No results returned for user: " + userData.user);
             }
             else if(data[0].password != userData.password)
             {
-                reject("Incorrect Password for user: " + data.userName)
+                reject("Incorrect Password for user: " + data[0].userName)
             }
             else
             {
-                data[0].push({dateTime: (new Date()).toString(), userAgent: userData.userAgent});
-                user.update({userName: data[0].username},
-                    {$set: {loginHistory: data[0].loginHistory }}
-                ).exec().then(()=>{
+                data[0].loginHistory.push({dateTime: (new Date()).toString(), userAgent: userData.userAgent});
+
+                User.update( {userName: data[0].userName},
+                    { $set: {loginHistory: data[0].loginHistory}},{ multi: false})
+                .exec().then(()=>{
                     resolve(data[0]);
                 }).catch((err)=>{
                     reject("There was a error verifying the user: " + err);
@@ -88,4 +91,3 @@ module.exports.checkUser = function(userData)
         });
     });
 }
-

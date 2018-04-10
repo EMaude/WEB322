@@ -61,7 +61,7 @@ app.use(function (req, res, next) {
 
 //midware
 app.use(clientSessions({
-    cookieName: "web322app_6",
+    cookieName: "session",
     secret: "8Zct3FaZyuMAIl6Dnvz6zXRHbbr7APB7RfSipeN9DD0ZgrInBmWyyd4lFcr1b2f2VgMANt7KYTVbKopp", 
     duration: 2 * 60 * 1000,
     activeDuration: 1000 * 60
@@ -73,14 +73,14 @@ app.use(function(req, res, next) {
 });
 
 
-function ensureLogin(req, res, next) {
+function ensureLogin(req, res, next) 
+{
     if (!req.session.user) {
       res.redirect("/login");
     } else {
       next();
     }
-  }
-
+}
 
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -304,11 +304,12 @@ app.get("/register",  function(req, res){
 });
 
 app.get("/logout", function(req, res){
+    req.session.reset();
     res.redirect("/");
 });
 
 app.get("/userHistory", ensureLogin, function(req, res){
-
+    res.render("userHistory", {data: req.session.user});
 });
 
 app.post("/register", (req, res )=>{
@@ -323,12 +324,12 @@ app.post("/register", (req, res )=>{
 app.post("/login", (req, res) => {
     req.body.userAgent = req.get('User-Agent');
 
-    dataServiceAuth.checkUser(req.body).then((user)=>{
+    dataServiceAuth.checkUser(req.body).then((data)=>{
         req.session.user = {
-            userName: user.userName,
-            email: user.email,
-            loginHistory: loginHistory
-        }
+            userName: data.userName,
+            email: data.email,
+            loginHistory: data.loginHistory
+        };
         res.redirect('/employees');
     }).catch((err)=>{
         res.render("login", {errorMessage: err, userName: req.body.userName});
@@ -339,12 +340,12 @@ app.post("/login", (req, res) => {
 
 //init 
 data.initalize()
-.then(dataServiceAuth.initalize)
+.then(dataServiceAuth.initialize)
 .then(() => {
         app.listen(port, () => {
             console.log("Express http server listening on " + port);
         });
     }
 ).catch((err) => {
-    console.log(err);
+    console.log("unable to start server: " + err);
 });
